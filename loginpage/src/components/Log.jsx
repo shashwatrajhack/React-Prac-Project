@@ -6,6 +6,7 @@ const Log = () => {
   const handleSingin = () => {
     settoggle(false);
     setIsSignIn(false);
+    
   };
   const handleSingUp = () => {
     settoggle(true);
@@ -31,7 +32,7 @@ const Log = () => {
           </button>
         </div>
         <div className="w-1/4 p-4 bg-blue-200">
-          <button className="w-full bg-red-500 text-white py-2 px-4 rounded">
+          <button className="w-full bg-red-500 text-white py-2 px-4 rounded" onClick={()=>{localStorage.clear()}}>
             Clear All
           </button>
         </div>

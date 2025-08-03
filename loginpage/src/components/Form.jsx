@@ -7,25 +7,40 @@ const Form = ({ toggle, isSignIn }) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const onSubmit = () => {
-    console.log(userName,email,password);
     let obj = {};
     obj.userName = userName;
     obj.email = email;
     obj.password = password;
-    let arr = [obj]
+    let arr = [];
 
-  console.log(obj)
-  
-  localStorage.setItem("data",JSON.stringify(arr));
-  let arr1 = JSON.parse(localStorage.getItem("data"));
-  arr1.push(obj)
-  localStorage.setItem("data",JSON.stringify(arr))
-  
-  }
+    let getItemFromLocalStorage = localStorage.getItem("data");
+    console.log("code run",isSignIn)
+    if(userName == "" && email == "" && password == "") return window.alert("add username");
+    if (isSignIn == false ) {
+     arr = JSON.parse(getItemFromLocalStorage);
+      for (let i = 0; i < arr.length; i++) {
+        if (arr[i].userName == userName && arr[i].password == password) {
+          return window.alert("User Logged in successfully");
+        }
+      }
+     return window.alert("User Does not exist");
 
-
-  
-
+    }
+    
+    if (getItemFromLocalStorage) {
+      arr = JSON.parse(getItemFromLocalStorage);
+      for (let i = 0; i < arr.length; i++) {
+        if (arr[i].userName == userName || arr[i].email == email) {
+          return window.alert("User already exist");
+        }
+      }
+      arr.push(obj);
+    } else {
+      arr = [obj];
+    }
+    localStorage.setItem("data", JSON.stringify(arr));
+    setEmail(""), setUserName(""), setPassword("");
+  };
 
   return (
     <div className="border-2 p-2 m-1">
@@ -49,7 +64,6 @@ const Form = ({ toggle, isSignIn }) => {
               value={userName}
               onChange={(e) => {
                 setUserName(e.target.value);
-                console.log(userName);
               }}
             />
           </div>
@@ -69,10 +83,9 @@ const Form = ({ toggle, isSignIn }) => {
                 required
                 value={email}
                 onChange={(e) => {
-                setEmail(e.target.value);
-                console.log(email);
-              }}
-                
+                  setEmail(e.target.value);
+                  console.log(email);
+                }}
               />
             </div>
           )}
@@ -90,7 +103,8 @@ const Form = ({ toggle, isSignIn }) => {
               name="password"
               className="w-full border border-gray-300 rounded px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
               required
-             onChange={(e) => {
+              value={password}
+              onChange={(e) => {
                 setPassword(e.target.value);
                 console.log(password);
               }}
