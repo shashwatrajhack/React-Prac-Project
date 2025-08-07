@@ -1,10 +1,11 @@
-const Header = () => {
-    return (<div className="header border-2 p-2 m-2 text-center font-bold">
-        <h1>Shashwat Todo</h1>
+import React from 'react'
 
-    </div>)
-
-
+function Header() {
+  return (
+    <div className='p-4 m-2 border-2 bg-cyan-300 text-2xl text-center'>
+        <h1>Log in Page</h1>
+    </div>
+  )
 }
 
-export default Header;
+export default Header

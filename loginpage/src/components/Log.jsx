@@ -1,45 +1,105 @@
-import Form from "./Form";
 import { useState } from "react";
-const Log = () => {
-  const [toggle, settoggle] = useState(false);
-  const [isSignIn, setIsSignIn] = useState(false);
-  const handleSingin = () => {
-    settoggle(false);
-    setIsSignIn(false);
-    
+import { useNavigate } from "react-router-dom";
+
+function Log(props) {
+  const navigate = useNavigate(); // 🔥 Initialize router hook
+  const [userDetails, setUserDetails] = useState({
+    userName: "",
+    password: "",
+    email: "",
+  });
+
+  const inputValue = () => {
+    if (
+      userDetails.userName == "" ||
+      userDetails.password == "" ||
+      (props.toggle && userDetails.email == "")
+    )
+      return window.alert("add userName");
+    if (!props.toggle) {
+      let includeUser = localStorage.getItem("data");
+      if (!includeUser) return window.alert("user nahi hai");
+      let data1 = JSON.parse(includeUser);
+
+      for (let i = 0; i < data1.length; i++) {
+        if (
+          data1[i].userName == userDetails.userName &&
+          data1[i].password == userDetails.password
+        ) {
+          setUserDetails({ ...userDetails, userName: "", password: "" });
+
+           window.alert("loggedIn successfully");
+
+          navigate("/home");
+          return
+        }
+      }
+
+      return window.alert("user doesnt exist");
+    }
+
+    const arr = [userDetails];
+    const value = localStorage.getItem("data");
+    if (!value) {
+      localStorage.setItem("data", JSON.stringify(arr));
+    } else {
+      let parsedValue = JSON.parse(value);
+      for (let i = 0; i < parsedValue.length; i++) {
+        if (parsedValue[i].userName == userDetails.userName)
+          return window.alert("User already exist");
+      }
+
+      parsedValue.push(userDetails);
+      localStorage.setItem("data", JSON.stringify(parsedValue));
+    }
+
+    setUserDetails({ userName: "", password: "", email: "" });
   };
-  const handleSingUp = () => {
-    settoggle(true);
-    setIsSignIn(true);
-  };
+
   return (
-    <div>
-      <div className="flex flex-row">
-        <div className="w-1/2 p-4 bg-red-200">
-          <button
-            className="w-full bg-red-500 text-white py-2 px-4 rounded"
-            onClick={handleSingin}
-          >
-            SignIn
-          </button>
-        </div>
-        <div className="w-1/2 p-4 bg-green-200">
-          <button
-            className="w-full bg-red-500 text-white py-2 px-4 rounded"
-            onClick={handleSingUp}
-          >
-            SignUp
-          </button>
-        </div>
-        <div className="w-1/4 p-4 bg-blue-200">
-          <button className="w-full bg-red-500 text-white py-2 px-4 rounded" onClick={()=>{localStorage.clear()}}>
-            Clear All
-          </button>
-        </div>
+    <div className="p-4 m-2 border-2 bg-yellow-50 text-2xl text-center flex flex-wrap justify-between">
+      <div>
+        <label>UserName</label>
+        <input
+          type="text"
+          value={userDetails.userName}
+          className="p-4 m-2 border-2 flex flex-wrap"
+          onChange={(e) => {
+            setUserDetails({ ...userDetails, userName: e.target.value });
+          }}
+        />
+        <label>Password</label>
+        <input
+          type="password"
+          value={userDetails.password}
+          className="p-4 m-2 border-2 flex flex-wrap"
+          onChange={(e) => {
+            setUserDetails({ ...userDetails, password: e.target.value });
+          }}
+        />
+        {props.toggle && (
+          <div>
+            {" "}
+            <label>Email</label>
+            <input
+              type="text"
+              value={userDetails.email}
+              className="p-4 m-2 border-2 flex flex-wrap"
+              onChange={(e) => {
+                setUserDetails({ ...userDetails, email: e.target.value });
+              }}
+            />
+          </div>
+        )}
+        <button
+          className="p-2 m-2 bg-blue-500 cursor-pointer"
+          onClick={inputValue}
+        >
+          {props.toggle ? "SignUp" : "SignIn"}
+        </button>
       </div>
-      <Form toggle={toggle} isSignIn={isSignIn} />
     </div>
   );
-};
+}
 
 export default Log;
